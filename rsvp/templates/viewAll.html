@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+  </head>
+  <body>
+   <div class="container">
+      <h1>All </h1>
+       <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Function Name</th>
+              <th scope="col">Total invites</th>
+              <th scope="col">RSVP</th>
+              <th scope="col">URL</th>
+              <th scope="col">QR CODE</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in all %}
+            <tr>
+              <th scope="row">{{ item.booking_id }}</th>
+              <td>{{ item.guest_name }}</td>
+              <td>{{ item.function_name }}</td>
+              <td>{{ item.max_rsvp }}</td>
+              <td>{{ item.done_rsvp }}</td>
+              <td><a href="{{ item.url }}" target="_blank">{{ item.url }}</a></td>
+              <td><a href="/media/{{ item.qrcode }}" target="_blank">{{ item.qrcode }}</a> </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+
+</div>
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+</body>
