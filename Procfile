@@ -1,1 +1,1 @@
-web: gunicorn SmartRSVP.wsgi
+web: gunicorn SR.wsgi
