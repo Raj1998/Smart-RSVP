@@ -42,7 +42,8 @@ def insert(request):
     # for example
     # url = "http://192.168.43.90:8000/rsvp?bid="+digest
 
-    url = "http://localhost:8000/rsvp?bid="+digest
+    # url = "http://localhost:8000/rsvp?bid="+digest
+    url = "https://django-app-241.herokuapp.com/rsvp?bid="+digest
     if not Booking.objects.filter(digest=digest):
         qr = qrcode.make(url)
         base_path = os.getcwd()+"/media/rsvp/"
