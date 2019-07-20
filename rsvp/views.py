@@ -5,8 +5,8 @@ from django.db.models import Sum
 import hashlib
 import qrcode
 import os
-from io import StringIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
+# from io import StringIO
+# from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 # Create your views here.
