@@ -1,5 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
 from .models import Booking
 from django.db.models import Sum
 import hashlib
@@ -9,7 +12,6 @@ import os
 # from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
-# Create your views here.
 def index(request):
     max_rsvp = Booking.objects.aggregate(Sum('max_rsvp'))['max_rsvp__sum']
     done_rsvp = Booking.objects.aggregate(Sum('done_rsvp'))['done_rsvp__sum']
@@ -93,3 +95,42 @@ def done(request):
     except:
         res = "<h1>Something went wrong...!</h1>"
     return HttpResponse(res)
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('index')
+        else:
+            return HttpResponse("try again")
+
+    else:
+        form = UserCreationForm()
+        context = {'form': form}
+        return render(request, 'register.html', context)
+
+def login_method(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('index')
+        else:
+           return redirect('login')
+    else:
+        return render(request, 'login.html')
+
+
+def logout_method(request):
+    logout(request)
+    messages.info(request, "Logged out")
+    return redirect('index')
