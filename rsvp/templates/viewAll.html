@@ -10,8 +10,7 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
-              <th scope="col">Function Name</th>
-              <!--<th scope="col">Event Name</th>-->
+              <th scope="col">Event Name</th>
               <th scope="col">Total invites</th>
               <th scope="col">RSVP</th>
               <th scope="col">URL</th>
@@ -23,8 +22,7 @@
             <tr>
               <th scope="row">{{ item.booking_id }}</th>
               <td>{{ item.guest_name }}</td>
-              <td>{{ item.function_name }}</td>
-              <!--<td>{{ item.event.event_name }}</td>-->
+              <td>{{ item.event.event_name }}</td>
               <td>{{ item.max_rsvp }}</td>
               <td>{{ item.done_rsvp }}</td>
               <td><a href="{{ item.url }}" target="_blank">{{ item.url }}</a></td>
