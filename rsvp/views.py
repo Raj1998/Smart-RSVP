@@ -116,6 +116,7 @@ def register(request):
         context = {'form': form}
         return render(request, 'register.html', context)
 
+
 def login_method(request):
     if request.method == "POST":
         username = request.POST.get('username')

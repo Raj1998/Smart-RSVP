@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-  </head>
-  <body>
+{% extends 'base.html' %}
+{% block title %} Welcome Page {% endblock %}
+
+{%block body%}
+
    <div class="container">
       <h1>Welcome, {{name}}</h1>
        <h2>To, {{function}}</h2>
        <hr>
-      <div class="container">
+
         <h4>Provide no. of RSVP</h4>
           <form action="/done/" method="post">
                {% csrf_token %}
@@ -28,9 +23,5 @@
                <button type="submit" class="btn btn-primary">Done</button>
           </form>
       </div>
-</div>
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
-</body>
+
+{% endblock %}
