@@ -4,9 +4,18 @@ from django.dispatch import receiver
 from django.conf import settings
 
 
+class Event(models.Model):
+    event_id = models.AutoField(primary_key=True)
+    event_name = models.CharField(max_length=200)
+    event_desc = models.CharField(max_length=500)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+
+
 # Create your models here.
 class Booking(models.Model):
     booking_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     guest_name = models.CharField(max_length=300)
     function_name = models.CharField(max_length=400)
     max_rsvp = models.IntegerField()
@@ -15,12 +24,6 @@ class Booking(models.Model):
     url = models.CharField(max_length=250)
     qrcode = models.ImageField(upload_to="rsvp", default="")
 
-
-class Event(models.Model):
-    event_id = models.AutoField(primary_key=True)
-    event_name = models.CharField(max_length=200)
-    event_desc = models.CharField(max_length=500)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
 
 
 # deleting coresponding image on the deletion of record.

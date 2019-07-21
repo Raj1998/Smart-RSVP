@@ -3,6 +3,7 @@ from django.shortcuts import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
+from django.utils.safestring import mark_safe
 from .models import Booking, Event
 from django.db.models import Sum
 import hashlib
@@ -31,7 +32,14 @@ def home(request):
 
 def book(request):
     if request.user.is_authenticated:
-        return render(request, 'addRecord.html')
+        current_user = request.user
+        events = Event.objects.all().filter(user=current_user)
+        if len(events) == 0:
+            messages.info(request, "Please add at least one event then proceed further.")
+            return redirect('event')
+        else:
+            params = {'events': events}
+            return render(request, 'addRecord.html', params)
     else:
         return redirect('register_login')
 
@@ -60,7 +68,8 @@ def event(request):
                             user=current_user
                         )
             new_event.save()
-            messages.info(request, "New event is added, now you can add invites in it.")
+            msg = "New event is added, now you can add invites in it. <a href='/book'>here</a>"
+            messages.info(request, mark_safe(msg))
             return redirect('event')
     else:
         return redirect('register_login')
