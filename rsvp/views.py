@@ -3,7 +3,7 @@ from django.shortcuts import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from .models import Booking
+from .models import Booking, Event
 from django.db.models import Sum
 import hashlib
 import qrcode
@@ -13,20 +13,57 @@ import os
 
 
 def index(request):
-    max_rsvp = Booking.objects.aggregate(Sum('max_rsvp'))['max_rsvp__sum']
-    done_rsvp = Booking.objects.aggregate(Sum('done_rsvp'))['done_rsvp__sum']
-    params = {'max': max_rsvp, 'done': done_rsvp}
-    return render(request, 'home.html', params)
+    if request.user.is_authenticated:
+        return redirect('home')
+    else:
+        return redirect('register_login')
+
+
+def home(request):
+    if request.user.is_authenticated:
+        max_rsvp = Booking.objects.aggregate(Sum('max_rsvp'))['max_rsvp__sum']
+        done_rsvp = Booking.objects.aggregate(Sum('done_rsvp'))['done_rsvp__sum']
+        params = {'max': max_rsvp, 'done': done_rsvp}
+        return render(request, 'home.html', params)
+    else:
+        return redirect('register_login')
 
 
 def book(request):
-    return render(request, 'addRecord.html')
+    if request.user.is_authenticated:
+        return render(request, 'addRecord.html')
+    else:
+        return redirect('register_login')
 
 
 def viewAll(request):
-    all_bookings = Booking.objects.all()
-    params = { 'all': all_bookings }
-    return render(request, 'viewAll.html', params)
+    if request.user.is_authenticated:
+        all_bookings = Booking.objects.all()
+        params = { 'all': all_bookings }
+        return render(request, 'viewAll.html', params)
+    else:
+        return redirect('register_login')
+
+
+def event(request):
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            return render(request, 'newEvent.html')
+        else:
+            current_user = request.user
+            # print(current_user)
+            event_name = request.POST['name']
+            event_desc = request.POST['desc']
+            new_event = Event(
+                            event_name=event_name,
+                            event_desc=event_desc,
+                            user=current_user
+                        )
+            new_event.save()
+            messages.info(request, "New event is added, now you can add invites in it.")
+            return redirect('event')
+    else:
+        return redirect('register_login')
 
 
 def insert(request):
@@ -97,6 +134,12 @@ def done(request):
     return HttpResponse(res)
 
 
+def register_login(request):
+    form = UserCreationForm()
+    context = {'form': form}
+    return render(request, 'register_login.html', context)
+
+
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -109,26 +152,23 @@ def register(request):
             login(request, user)
             return redirect('index')
         else:
-            return HttpResponse("try again")
-
+            return HttpResponse("try again with different username and/or password... <a href='/'>here</a>")
     else:
-        form = UserCreationForm()
-        context = {'form': form}
-        return render(request, 'register.html', context)
+        return HttpResponse("method not allowed")
 
 
 def login_method(request):
     if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST['username']
+        password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
             return redirect('index')
         else:
-           return redirect('login')
+            return HttpResponse("try again... <a href='/'>here</a>")
     else:
-        return render(request, 'login.html')
+        return HttpResponse("Method not allowed")
 
 
 def logout_method(request):

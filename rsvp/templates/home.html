@@ -7,16 +7,14 @@
       <h1>Home Page</h1>
        <hr>
             {% if user.is_authenticated %}
-          <h3>User: {{ user.username }}</h3>
+          <h3>Hello, {{ user.username }}</h3>
             {% else %}
        <h3>User not logged in</h3>
             {% endif %}
           <h4>Total invites: {{max}}</h4>
           <h4>Total RSVPs: {{done}}</h4>
 
-          <a href="/book" class="btn btn-primary">Add Guests</a>
-          <a href="/viewAll" class="btn btn-primary">View all invites</a>
-          <a href="/logout" class="btn btn-danger">Log out</a>
+
     </div>
 
 {% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} Add New Event {% endblock %}
+{%block body%}
+
+{% if messages %}
+    {% for message in messages %}
+    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+
+   <div class="container">
+      <h1>New Event</h1>
+
+          <form action="/event" method="post">
+               {% csrf_token %}
+              <div class="form-group">
+                <label for="exampleInput">Event Name</label>
+                <input type="text" class="form-control" id="exampleInput" placeholder="Name" name="name" required>
+              </div>
+              <div class="form-group">
+                <label for="exampleInput1">Event Description</label>
+                <input type="text" class="form-control" id="exampleInput1" placeholder="Function Name" name="desc" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+      </div>
+
+{% endblock %}

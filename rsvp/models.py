@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.conf import settings
+
 
 # Create your models here.
 class Booking(models.Model):
@@ -12,6 +14,13 @@ class Booking(models.Model):
     digest = models.CharField(max_length=35)
     url = models.CharField(max_length=250)
     qrcode = models.ImageField(upload_to="rsvp", default="")
+
+
+class Event(models.Model):
+    event_id = models.AutoField(primary_key=True)
+    event_name = models.CharField(max_length=200)
+    event_desc = models.CharField(max_length=500)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
 
 
 # deleting coresponding image on the deletion of record.
