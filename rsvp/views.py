@@ -32,14 +32,59 @@ def home(request):
 
 def book(request):
     if request.user.is_authenticated:
-        current_user = request.user
-        events = Event.objects.all().filter(user=current_user)
-        if len(events) == 0:
-            messages.info(request, "Please add at least one event then proceed further.")
-            return redirect('event')
+        if request.method == "GET":
+            current_user = request.user
+            events = Event.objects.all().filter(user=current_user)
+            if len(events) == 0:
+                messages.info(request, "Please add at least one event then proceed further.")
+                return redirect('event')
+            else:
+                params = {'events': events}
+                return render(request, 'addRecord.html', params)
         else:
-            params = {'events': events}
-            return render(request, 'addRecord.html', params)
+            name = request.POST.get('name')
+            e_id = request.POST.get('event_id')
+            maxRsvp = int(request.POST.get('maxRSVP'))
+            user = request.user
+            event = Event.objects.get(event_id=e_id)
+
+            # print(name)
+            # print(func)
+            # print(maxRsvp)
+
+            message = name + event.event_name
+            digest = hashlib.md5(message.encode()).hexdigest()
+
+            # change localhost to your static IP or website base url
+            # for example
+            # url = "http://192.168.43.90:8000/rsvp?bid="+digest
+
+            if "ON_HEROKU" in os.environ:
+                url = "https://django-app-241.herokuapp.com/rsvp?bid=" + digest
+            else:
+                url = "http://localhost:8000/rsvp?bid="+digest
+
+            if not Booking.objects.filter(digest=digest):
+                qr = qrcode.make(url)
+                base_path = os.getcwd() + "/media/rsvp/"
+                entry = Booking(guest_name=name,
+                                user= user,
+                                event= event,
+                                max_rsvp=maxRsvp,
+                                done_rsvp=maxRsvp,
+                                digest=digest,
+                                url=url
+                                )
+                entry.save()
+                i = entry.booking_id
+                file_name = str(i) + ".jpg"
+                qr.save(base_path + file_name)
+
+                Booking.objects.filter(booking_id=entry.booking_id).update(qrcode="rsvp/" + file_name)
+                return HttpResponse("data inserted...<a href='/'>back</a>")
+            else:
+                ss = "oops! duplicate data found (Guest name already in this event).... try again... <a href='/book'>back</a>"
+                return HttpResponse(ss)
     else:
         return redirect('register_login')
 
@@ -75,54 +120,18 @@ def event(request):
         return redirect('register_login')
 
 
-def insert(request):
-    name = request.POST.get('name')
-    func = request.POST.get('function_name')
-    maxRsvp = int(request.POST.get('maxRSVP'))
-    # print(name)
-    # print(func)
-    # print(maxRsvp)
-
-    message = name+func
-    digest = hashlib.md5(message.encode()).hexdigest()
-
-    # change localhost to your static IP or website base url
-    # for example
-    # url = "http://192.168.43.90:8000/rsvp?bid="+digest
-
-    # url = "http://localhost:8000/rsvp?bid="+digest
-    url = "https://django-app-241.herokuapp.com/rsvp?bid="+digest
-    if not Booking.objects.filter(digest=digest):
-        qr = qrcode.make(url)
-        base_path = os.getcwd()+"/media/rsvp/"
-        entry = Booking(guest_name=name,
-                        function_name=func,
-                        max_rsvp=maxRsvp,
-                        done_rsvp=maxRsvp,
-                        digest=digest,
-                        url=url
-                        )
-        entry.save()
-        i = entry.booking_id
-        file_name = str(i)+".jpg"
-        qr.save(base_path + file_name)
-
-        Booking.objects.filter(booking_id=entry.booking_id).update(qrcode="rsvp/"+file_name)
-        return HttpResponse("data inserted...<a href='/'>back</a>")
-    else:
-        return HttpResponse("oops duplicate data.... try again... <a href='/book'>back</a>")
-
-
 def rsvp(request):
     id = request.GET.get('bid')
-    if id == None or len(id)!=32:
+    if id is None or len(id) != 32:
         res = "<h1>Invalid url ...</h1>"
         return HttpResponse(res)
     else:
         try:
             guest = Booking.objects.get(digest=id)
             params = {'name':guest.guest_name,
-                      'function':guest.function_name,
+                      'host_name': guest.user.username,
+                      'function':guest.event.event_name,
+                      'desc': guest.event.event_desc,
                       'max': guest.max_rsvp,
                       'digest':guest.digest,
                       'range':range(0, guest.max_rsvp+1)}

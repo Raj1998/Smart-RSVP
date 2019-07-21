@@ -17,7 +17,6 @@ class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     guest_name = models.CharField(max_length=300)
-    function_name = models.CharField(max_length=400)
     max_rsvp = models.IntegerField()
     done_rsvp = models.IntegerField()
     digest = models.CharField(max_length=35)

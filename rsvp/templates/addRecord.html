@@ -6,22 +6,18 @@
    <div class="container">
       <h1>Insert guests</h1>
 
-          <form action="/insertData/" method="post">
+          <form action="/book/" method="post">
                {% csrf_token %}
               <div class="form-group">
                 <label for="exampleInput">Guest Name</label>
                 <input type="text" class="form-control" id="exampleInput" placeholder="Name" name="name" required>
               </div>
-              <div class="form-group">
-                <label for="exampleInput1">Function Name</label>
-                <input type="text" class="form-control" id="exampleInput1" placeholder="Function Name" name="function_name" required>
-              </div>
 
                 <div class="form-group">
                     <label for="exampleFormControlSelect1">Select Event</label>
-                    <select class="form-control" id="exampleFormControlSelect1">
+                    <select class="form-control" id="exampleFormControlSelect1" name="event_id">
                         {% for e in events %}
-                      <option>{{ e.event_name }}</option>
+                      <option value="{{e.event_id}}">{{ e.event_name }}</option>
                       {% endfor %}
                     </select>
                   </div>

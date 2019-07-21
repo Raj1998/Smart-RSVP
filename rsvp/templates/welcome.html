@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block title %} Welcome Page {% endblock %}
-
 {%block body%}
 
    <div class="container">
-      <h1>Welcome, {{name}}</h1>
-       <h2>To, {{function}}</h2>
+       <h1>Dear, <span style="color:#45CE30">{{name}}</span></h1>
+       <h2>You are invited to, <span style="color:#4834DF">{{function}} - {{desc}}</span> </h2>
+       <h3>Invitation From, <span style="color:#4834DF">{{host_name}}</span> </h3>
        <hr>
 
         <h4>Provide no. of RSVP</h4>
