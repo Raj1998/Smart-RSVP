@@ -81,7 +81,8 @@ def book(request):
                 qr.save(base_path + file_name)
 
                 Booking.objects.filter(booking_id=entry.booking_id).update(qrcode="rsvp/" + file_name)
-                return HttpResponse("data inserted...<a href='/'>back</a>")
+                messages.info(request, "Record added successfully")
+                return redirect('booking')
             else:
                 ss = "oops! duplicate data found (Guest name already in this event).... try again... <a href='/book'>back</a>"
                 return HttpResponse(ss)
