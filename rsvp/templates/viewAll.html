@@ -4,7 +4,25 @@
 {%block body%}
 
    <div class="container">
-      <h1>All </h1>
+      <h1>All of your guests</h1>
+
+       <div class="form-group">
+            <label for="select">Select Event to see by Events</label>
+            <select class="form-control" id="select" name="event_id" onchange="selectListener();">
+                <option value="all">---</option>
+                <option value="all">All</option>
+                {% for e in events %}
+              <option value="{{e.event_id}}"
+                      {% if eid == e.event_id %}
+                selected
+              {% endif %}
+              >
+                  {{ e.event_name }}
+              </option>
+              {% endfor %}
+            </select>
+       </div>
+
        <table class="table table-striped">
           <thead>
             <tr>
@@ -35,4 +53,25 @@
 
 </div>
 
+{% endblock %}
+
+{% block script %}
+    <script>
+       function selectListener(){
+            id = document.getElementById("select").value;
+            console.log(id)
+            url = window.location.href
+            base_url = url.split("?")[0]
+            if (id=="all"){
+                redir = base_url;
+                console.log(redir)
+            }
+            else{
+                redir = base_url + "?eid=" + id;
+            }
+
+            console.log(redir);
+            window.location = redir;
+       }
+    </script>
 {% endblock %}

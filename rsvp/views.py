@@ -91,8 +91,18 @@ def book(request):
 
 def viewAll(request):
     if request.user.is_authenticated:
-        all_bookings = Booking.objects.all().filter(user=request.user)
-        params = { 'all': all_bookings }
+        user = request.user
+        id = request.GET.get('eid')
+        if id:
+            event = Event.objects.get(event_id=id)
+            events = Event.objects.all().filter(user=user)
+            all_bookings = Booking.objects.all().filter(event=event, user=user)
+            params = {'all': all_bookings, 'events': events, 'eid': int(id)}
+            return render(request, 'viewAll.html', params)
+
+        all_bookings = Booking.objects.all().filter(user=user)
+        events = Event.objects.all().filter(user=user)
+        params = { 'all': all_bookings, 'events': events }
         return render(request, 'viewAll.html', params)
     else:
         return redirect('register_login')
