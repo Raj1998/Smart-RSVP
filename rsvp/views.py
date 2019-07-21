@@ -22,8 +22,8 @@ def index(request):
 
 def home(request):
     if request.user.is_authenticated:
-        max_rsvp = Booking.objects.aggregate(Sum('max_rsvp'))['max_rsvp__sum']
-        done_rsvp = Booking.objects.aggregate(Sum('done_rsvp'))['done_rsvp__sum']
+        max_rsvp = Booking.objects.all().filter(user=request.user).aggregate(Sum('max_rsvp'))['max_rsvp__sum']
+        done_rsvp = Booking.objects.all().filter(user=request.user).aggregate(Sum('done_rsvp'))['done_rsvp__sum']
         params = {'max': max_rsvp, 'done': done_rsvp}
         return render(request, 'home.html', params)
     else:
@@ -91,7 +91,7 @@ def book(request):
 
 def viewAll(request):
     if request.user.is_authenticated:
-        all_bookings = Booking.objects.all()
+        all_bookings = Booking.objects.all().filter(user=request.user)
         params = { 'all': all_bookings }
         return render(request, 'viewAll.html', params)
     else:
