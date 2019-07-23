@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 {% block title %} All invites {% endblock %}
-
 {%block body%}
 
    <div class="container">
       <h1>All of your guests</h1>
 
        <div class="form-group">
-            <label for="select">Select Event to see by Events</label>
+            <!--<label for="select">Select Event to see by Events</label>-->
             <select class="form-control" id="select" name="event_id" onchange="selectListener();">
-                <option value="all">---</option>
+                <option value="all">Select Event to see by Events</option>
                 <option value="all">All</option>
                 {% for e in events %}
               <option value="{{e.event_id}}"
@@ -33,6 +32,7 @@
               <th scope="col">RSVP</th>
               <th scope="col">URL</th>
               <th scope="col">QR CODE</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -45,6 +45,7 @@
               <td>{{ item.done_rsvp }}</td>
               <td><a href="{{ item.url }}" target="_blank">{{ item.url }}</a></td>
               <td><a href="/media/{{ item.qrcode }}" target="_blank">{{ item.qrcode }}</a> </td>
+              <td><a class="btn btn-danger" href="/delete?b_id={{ item.booking_id }}">Delete</a> </td>
             </tr>
           {% endfor %}
           </tbody>

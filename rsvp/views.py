@@ -81,11 +81,11 @@ def book(request):
                 qr.save(base_path + file_name)
 
                 Booking.objects.filter(booking_id=entry.booking_id).update(qrcode="rsvp/" + file_name)
-                messages.info(request, "Record added successfully")
+                messages.info(request, "Record added successfully", extra_tags="success")
                 return redirect('booking')
             else:
-                ss = "oops! duplicate data found (Guest name already in this event).... try again... <a href='/book'>back</a>"
-                return HttpResponse(ss)
+                messages.info(request, "oops! duplicate data found (Guest name already in this event).... try again...")
+                return redirect('booking')
     else:
         return redirect('register_login')
 
@@ -99,6 +99,7 @@ def viewAll(request):
             events = Event.objects.all().filter(user=user)
             all_bookings = Booking.objects.all().filter(event=event, user=user)
             params = {'all': all_bookings, 'events': events, 'eid': int(id)}
+            messages.info(request, "Event - "+event.event_name)
             return render(request, 'viewAll.html', params)
 
         all_bookings = Booking.objects.all().filter(user=user)
@@ -132,6 +133,16 @@ def event(request):
 
 
 def rsvp(request):
+    if request.method == "POST":
+        number = int(request.POST.get('number'))
+        digest = request.POST.get('digest')
+        try:
+            Booking.objects.filter(digest=digest).update(done_rsvp=number)
+            messages.info(request, "Thank you for your response. It is saved & you can also update it again.", extra_tags="success")
+        except:
+            messages.info(request, "Something went wrong...!", extra_tags="danger")
+        return render(request, 'welcome.html?bid='+str(number))
+
     id = request.GET.get('bid')
     if id is None or len(id) != 32:
         res = "<h1>Invalid url ...</h1>"
@@ -150,17 +161,6 @@ def rsvp(request):
         except:
             res = "<h1>record not found</h1>"
             return HttpResponse(res)
-
-
-def done(request):
-    number = int(request.POST.get('number'))
-    digest = request.POST.get('digest')
-    try:
-        Booking.objects.filter(digest=digest).update(done_rsvp = number)
-        res = "<h1>Updation Done. Thank you</h1>"
-    except:
-        res = "<h1>Something went wrong...!</h1>"
-    return HttpResponse(res)
 
 
 def register_login(request):
@@ -202,5 +202,26 @@ def login_method(request):
 
 def logout_method(request):
     logout(request)
-    messages.info(request, "Logged out")
+    messages.info(request, "Logged out", extra_tags="warning")
     return redirect('index')
+
+
+def delete_record(request):
+    if request.user.is_authenticated:
+        b_id = request.GET.get('b_id')
+        user = request.user
+        if b_id:
+            try:
+                booking = Booking.objects.get(booking_id=b_id)
+                if booking and booking.user == user:
+                    Booking.objects.filter(booking_id=b_id).delete()
+                print(b_id)
+                messages.info(request, "Record deleted successfully", extra_tags="success")
+                return redirect('viewAll')
+            except:
+                messages.info(request, "Something went wrong.")
+                return redirect('viewAll')
+
+        return HttpResponse('Ist')
+    else:
+        return redirect('register_login')
