@@ -28,6 +28,7 @@ class Booking(models.Model):
 # credits: https://www.aceinthedeck.com/delete-image-after-deletion-from-database/
 @receiver(post_delete, sender=Booking)
 def photo_post_delete_handler(sender, **kwargs):
+    # try catch is added because if corresponding .jpg is missing it will stop deletion of records.
     try:
         listingImage = kwargs['instance']
         storage, path = listingImage.qrcode.storage, listingImage.qrcode.path
