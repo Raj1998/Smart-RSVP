@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %} All invites {% endblock %}
+{%block body%}
+
+   <div class="container">
+      <h1>All Events</h1>
+
+       <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Event_id</th>
+              <th scope="col">Event Name</th>
+              <th scope="col">Event Desc</th>
+              <!--<th scope="col">Total invites</th>-->
+              <!--<th scope="col">RSVP</th>-->
+              <!--<th scope="col">URL</th>-->
+              <!--<th scope="col">QR CODE</th>-->
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in events %}
+            <tr>
+              <th scope="row">{{ item.event_id }}</th>
+              <td>{{ item.event_name }}</td>
+              <td>{{ item.event_desc }}</td>
+              <!--<td>{{ item.max_rsvp }}</td>-->
+              <!--<td>{{ item.done_rsvp }}</td>-->
+              <!--<td><a href="{{ item.url }}" target="_blank">{{ item.url }}</a></td>-->
+              <!--<td><a href="/media/{{ item.qrcode }}" target="_blank">{{ item.qrcode }}</a> </td>-->
+              <td><a class="btn btn-danger" href="/delete_event?b_id={{ item.event_id }}">Delete</a> </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+
+</div>
+
+{% endblock %}

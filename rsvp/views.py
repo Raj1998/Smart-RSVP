@@ -110,6 +110,18 @@ def viewAll(request):
         return redirect('register_login')
 
 
+def viewAllEvents(request):
+    if request.user.is_authenticated:
+        user = request.user
+
+        # all_bookings = Event.objects.all().filter(user=user)
+        events = Event.objects.all().filter(user=user)
+        params = { 'events': events }
+        return render(request, 'viewAllEvents.html', params)
+    else:
+        return redirect('register_login')
+
+
 def event(request):
     if request.user.is_authenticated:
         if request.method == "GET":
@@ -225,6 +237,29 @@ def delete_record(request):
                 messages.info(request, "Something went wrong.")
                 return redirect('viewAll')
 
-        return HttpResponse('Ist')
+        return HttpResponse('Not allowed')
     else:
         return redirect('register_login')
+
+
+def delete_event(request):
+    if request.user.is_authenticated:
+        b_id = request.GET.get('b_id')
+        user = request.user
+        if b_id:
+            try:
+                event = Event.objects.get(event_id=b_id)
+                if event and event.user == user:
+                    Event.objects.filter(event_id=b_id).delete()
+                # print(b_id)
+                messages.info(request, "Record deleted successfully", extra_tags="success")
+                return redirect('viewAllEvents')
+            except:
+                messages.info(request, "Something went wrong.")
+                return redirect('viewAllEvents')
+
+        return HttpResponse('Not allowed')
+    else:
+        return redirect('register_login')
+
+

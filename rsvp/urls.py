@@ -10,10 +10,12 @@ urlpatterns = [
     path("rsvp/", views.rsvp, name="rsvp"),
     path("done/", views.done, name="done"),
     path("viewAll", views.viewAll, name="viewAll"),
+    path("viewAllEvents", views.viewAllEvents, name="viewAllEvents"),
     path("register_login/", views.register_login, name="register_login"),
     path("register", views.register, name="register"),
     path("login", views.login_method, name="login"),
     path("logout", views.logout_method, name="logout"),
     path("delete", views.delete_record, name="delete_record"),
+    path("delete_event", views.delete_event, name="delete_record"),
 
 ]
