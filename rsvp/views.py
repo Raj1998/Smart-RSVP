@@ -157,12 +157,13 @@ def done(request):
     if request.method == "POST":
         number = int(request.POST.get('number'))
         digest = request.POST.get('digest')
+        resp = ""
         try:
             Booking.objects.filter(digest=digest).update(done_rsvp=number)
-            messages.info(request, "Thank you for your response. It is saved & you can also update it again.", extra_tags="success")
+            resp = "Thank you for your response. It is saved & you can also update it again."
         except:
-            messages.info(request, "Something went wrong...!", extra_tags="danger")
-        # return render(request, 'welcome.html?bid='+str(number))
+            resp = "Something went wrong...!"
+        return HttpResponse(resp)
 
 
 def register_login(request):

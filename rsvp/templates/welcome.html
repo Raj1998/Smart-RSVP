@@ -19,7 +19,7 @@
                     {% endfor %}
                 </select>
               </div>
-              <input value="{{digest}}" name="digest" style="display:none">
+              <input id="digest" value="{{digest}}" name="digest" style="display:none">
                <button type="submit" class="btn btn-primary">Done</button>
           </form>
       </div>
@@ -27,28 +27,32 @@
 {% endblock %}
 
 {% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
        
        $("#mForm").submit(function(e){
        		e.preventDefault();
-       		x = $("#sel").val();
-       		console.log(x)
+       		number = $("#sel").val();
+          digest = $("#digest").val();
+          csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+          // console.log(number);
+          // console.log(digest);
 
-       	// 	var postData = "text";
-		      // $.ajax({
-		      //       type: "post",
-		      //       url: "url",
-		      //       data: postData,
-		      //       contentType: "application/x-www-form-urlencoded",
-		      //       success: function(responseData, textStatus, jqXHR) {
-		      //           alert("data saved")
-		      //       },
-		      //       error: function(jqXHR, textStatus, errorThrown) {
-		      //           console.log(errorThrown);
-		      //       }
-		      //   })
+       		var postData = {'number': number, 'digest': digest, 'csrfmiddlewaretoken':csrf_token};
+		      $.ajax({
+		            type: "post",
+		            url: "/done/",
+		            data: postData,
+		            contentType: "application/x-www-form-urlencoded",
+		            success: function(responseData, textStatus, jqXHR) {
+		                alert(responseData)
+		            },
+		            error: function(jqXHR, textStatus, errorThrown) {
+		                console.log(errorThrown);
+		            }
+		        })
 
-		      //  })
+		    });
 
     </script>
 {% endblock %}
