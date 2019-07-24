@@ -133,16 +133,6 @@ def event(request):
 
 
 def rsvp(request):
-    if request.method == "POST":
-        number = int(request.POST.get('number'))
-        digest = request.POST.get('digest')
-        try:
-            Booking.objects.filter(digest=digest).update(done_rsvp=number)
-            messages.info(request, "Thank you for your response. It is saved & you can also update it again.", extra_tags="success")
-        except:
-            messages.info(request, "Something went wrong...!", extra_tags="danger")
-        return render(request, 'welcome.html?bid='+str(number))
-
     id = request.GET.get('bid')
     if id is None or len(id) != 32:
         res = "<h1>Invalid url ...</h1>"
@@ -161,6 +151,18 @@ def rsvp(request):
         except:
             res = "<h1>record not found</h1>"
             return HttpResponse(res)
+
+
+def done(request):
+    if request.method == "POST":
+        number = int(request.POST.get('number'))
+        digest = request.POST.get('digest')
+        try:
+            Booking.objects.filter(digest=digest).update(done_rsvp=number)
+            messages.info(request, "Thank you for your response. It is saved & you can also update it again.", extra_tags="success")
+        except:
+            messages.info(request, "Something went wrong...!", extra_tags="danger")
+        # return render(request, 'welcome.html?bid='+str(number))
 
 
 def register_login(request):

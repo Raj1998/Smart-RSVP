@@ -9,7 +9,7 @@
        <hr>
 
         <h4>Provide no. of RSVP</h4>
-          <form action="/rsvp/" method="post">
+          <form id="mForm" method="post">
                {% csrf_token %}
             <div class="form-group">
                 <label for="sel">No. of people</label>
@@ -25,3 +25,35 @@
       </div>
 
 {% endblock %}
+
+{% block script %}
+    <script>
+       
+       $("#mForm").submit(function(e){
+       		e.preventDefault();
+       		x = $("#sel").val();
+       		console.log(x)
+
+       	// 	var postData = "text";
+		      // $.ajax({
+		      //       type: "post",
+		      //       url: "url",
+		      //       data: postData,
+		      //       contentType: "application/x-www-form-urlencoded",
+		      //       success: function(responseData, textStatus, jqXHR) {
+		      //           alert("data saved")
+		      //       },
+		      //       error: function(jqXHR, textStatus, errorThrown) {
+		      //           console.log(errorThrown);
+		      //       }
+		      //   })
+
+		      //  })
+
+    </script>
+{% endblock %}
+
+
+
+
+
