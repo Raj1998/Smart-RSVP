@@ -24,11 +24,13 @@ class Booking(models.Model):
     qrcode = models.ImageField(upload_to="rsvp", default="")
 
 
-
 # deleting coresponding image on the deletion of record.
 # credits: https://www.aceinthedeck.com/delete-image-after-deletion-from-database/
 @receiver(post_delete, sender=Booking)
 def photo_post_delete_handler(sender, **kwargs):
-    listingImage = kwargs['instance']
-    storage, path = listingImage.qrcode.storage, listingImage.qrcode.path
-    storage.delete(path)
+    try:
+        listingImage = kwargs['instance']
+        storage, path = listingImage.qrcode.storage, listingImage.qrcode.path
+        storage.delete(path)
+    except:
+        print("Problem while image deletion")

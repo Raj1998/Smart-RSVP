@@ -162,7 +162,7 @@ def done(request):
             Booking.objects.filter(digest=digest).update(done_rsvp=number)
             resp = "Thank you for your response. It is saved & you can also update it again."
         except:
-            resp = "Something went wrong...!"
+            resp = "Something went wrong....!"
         return HttpResponse(resp)
 
 
