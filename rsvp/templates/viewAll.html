@@ -11,15 +11,23 @@
                 <option value="all">Select Event to see by Events</option>
                 <option value="all">All</option>
                 {% for e in events %}
-              <option value="{{e.event_id}}"
-                      {% if eid == e.event_id %}
-                selected
-              {% endif %}
-              >
-                  {{ e.event_name }}
-              </option>
+                  <option value="{{e.event_id}}"
+                          {% if eid == e.event_id %}
+                            selected
+                          {% endif %}
+                  >
+                      {{ e.event_name }}
+                  </option>
               {% endfor %}
             </select>
+            {% if max and done %}
+              <h4>Total Invites: <span id="mx">{{max}}</span> </h4>
+              <h4>Total RSVPs: <span id="dn">{{done}}</span> </h4>
+<!--               <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+                <canvas id="myChart"></canvas>
+            </div> -->
+            <canvas id="myChart"></canvas>
+            {% endif %}
        </div>
 
        <table class="table table-striped">
@@ -57,22 +65,61 @@
 {% endblock %}
 
 {% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js" integrity="sha256-qSIshlknROr4J8GMHRlW3fGKrPki733tLq+qeMCR05Q=" crossorigin="anonymous"></script>
     <script>
        function selectListener(){
-            id = document.getElementById("select").value;
-            console.log(id)
+            id = document.getElementById("select").value;           
             url = window.location.href
             base_url = url.split("?")[0]
             if (id=="all"){
                 redir = base_url;
-                console.log(redir)
             }
             else{
                 redir = base_url + "?eid=" + id;
             }
-
-            console.log(redir);
+            
             window.location = redir;
        }
+
+       if(document.getElementById("mx") != null && document.getElementById("dn") != null){
+          total = parseInt(document.getElementById("mx").innerText);
+          done = parseInt(document.getElementById("dn").innerText);
+          not_attending = total - done;
+
+          var ctx = $('#myChart');
+          data = {
+              datasets: [{
+                  data: [done, not_attending],
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.7)',
+                      'rgba(54, 162, 235, 0.7)',
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                   ],
+
+              }],
+
+              // These labels appear in the legend and in the tooltips when hovering different arcs
+              labels: [
+                  'Attending',
+                  'Not Attending'
+              ]
+          };
+
+          options = {
+              responsive: true,
+          }
+
+          // And for a doughnut chart
+          var myDoughnutChart = new Chart(ctx, {
+              type: 'doughnut',
+              data: data,
+              options: options
+          });
+
+        }
+
     </script>
 {% endblock %}

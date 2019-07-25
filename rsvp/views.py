@@ -99,16 +99,28 @@ def viewAll(request):
         id = request.GET.get('eid')
         if id:
             event = Event.objects.get(event_id=id)
-            events = Event.objects.all().filter(user=user)
+            events = Event.objects.all().filter(user=user) # this is to render HTML select element
             all_bookings = Booking.objects.all().filter(event=event, user=user)
-            params = {'all': all_bookings, 'events': events, 'eid': int(id)}
+
+            max_rsvp = all_bookings.aggregate(Sum('max_rsvp'))['max_rsvp__sum']
+            done_rsvp = all_bookings.aggregate(Sum('done_rsvp'))['done_rsvp__sum']
+            max_rsvp = 0 if max_rsvp is None else max_rsvp
+            done_rsvp = 0 if done_rsvp is None else done_rsvp
+
+            params = {
+                'all': all_bookings,
+                'events': events,
+                'eid': int(id),
+                'max': max_rsvp,
+                'done': done_rsvp
+            }
             messages.info(request, "Event - "+event.event_name)
             return render(request, 'viewAll.html', params)
-
-        all_bookings = Booking.objects.all().filter(user=user)
-        events = Event.objects.all().filter(user=user)
-        params = { 'all': all_bookings, 'events': events }
-        return render(request, 'viewAll.html', params)
+        else:
+            all_bookings = Booking.objects.all().filter(user=user)
+            events = Event.objects.all().filter(user=user)
+            params = { 'all': all_bookings, 'events': events }
+            return render(request, 'viewAll.html', params)
     else:
         return redirect('register_login')
 
