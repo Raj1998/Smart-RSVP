@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block title %} Homepage {% endblock %}
 {%block body%}
-
    <div class="container">
       <h1>Home Page</h1>
        <hr>
@@ -10,10 +9,57 @@
             {% else %}
        <h3>User not logged in</h3>
             {% endif %}
-          <h4>Total invites: {{max}}</h4>
-          <h4>Total RSVPs: {{done}}</h4>
+            <h4>Total invites: <span id="mx">{{max}}</span> </h4>
+            <h4>Total RSVPs: <span id="dn">{{done}}</span> </h4>
 
+       <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+		    <canvas id="myChart"></canvas>
+		</div>
+       <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
 
     </div>
 
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js" integrity="sha256-qSIshlknROr4J8GMHRlW3fGKrPki733tLq+qeMCR05Q=" crossorigin="anonymous"></script>
+<script>
+    total = parseInt($("#mx").text());
+    done = parseInt($("#dn").text());
+    not_attending = total - done;
+
+    var ctx = $('#myChart');
+    data = {
+        datasets: [{
+            data: [done, not_attending],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+             ],
+
+        }],
+
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: [
+            'Attending',
+            'Not Attending'
+        ]
+    };
+
+    options = {
+        responsive: true,
+    }
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: options
+    });
+
+</script>
 {% endblock %}

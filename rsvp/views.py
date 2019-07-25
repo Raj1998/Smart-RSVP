@@ -24,6 +24,9 @@ def home(request):
     if request.user.is_authenticated:
         max_rsvp = Booking.objects.all().filter(user=request.user).aggregate(Sum('max_rsvp'))['max_rsvp__sum']
         done_rsvp = Booking.objects.all().filter(user=request.user).aggregate(Sum('done_rsvp'))['done_rsvp__sum']
+        max_rsvp = 0 if max_rsvp is None else max_rsvp
+        done_rsvp = 0 if done_rsvp is None else done_rsvp
+
         params = {'max': max_rsvp, 'done': done_rsvp}
         return render(request, 'home.html', params)
     else:
@@ -84,7 +87,7 @@ def book(request):
                 messages.info(request, "Record added successfully", extra_tags="success")
                 return redirect('booking')
             else:
-                messages.info(request, "oops! duplicate data found (Guest name already in this event).... try again...")
+                messages.info(request, "oops! duplicate data found (Guest name already in this event).... try again...", "danger")
                 return redirect('booking')
     else:
         return redirect('register_login')
@@ -131,15 +134,20 @@ def event(request):
             # print(current_user)
             event_name = request.POST['name']
             event_desc = request.POST['desc']
-            new_event = Event(
-                            event_name=event_name,
-                            event_desc=event_desc,
-                            user=current_user
-                        )
-            new_event.save()
-            msg = "New event is added, now you can add invites in it. <a href='/book'>here</a>"
-            messages.info(request, mark_safe(msg))
-            return redirect('event')
+            if not Event.objects.filter(event_name=event_name):
+                new_event = Event(
+                                event_name=event_name,
+                                event_desc=event_desc,
+                                user=current_user
+                            )
+                new_event.save()
+                msg = "New event is added, now you can add invites in it. <a href='/book'>here</a>"
+                messages.info(request, mark_safe(msg))
+                return redirect('event')
+            else:
+                messages.info(request, "oops! Event is in db already .... try again with different name...", "danger")
+                return redirect('event')
+
     else:
         return redirect('register_login')
 
