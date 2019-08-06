@@ -148,7 +148,7 @@ def event(request):
             # print(current_user)
             event_name = request.POST['name']
             event_desc = request.POST['desc']
-            if not Event.objects.filter(event_name=event_name):
+            if not Event.objects.filter(event_name=event_name, user=current_user):
                 new_event = Event(
                                 event_name=event_name,
                                 event_desc=event_desc,
