@@ -42,7 +42,7 @@ def book(request):
                 messages.info(request, "Please add at least one event then proceed further.")
                 return redirect('event')
             else:
-                params = {'events': events}
+                params = {'events': events, 'nbar':'newInv'}
                 return render(request, 'addRecord.html', params)
         else:
             name = request.POST.get('name')
@@ -112,14 +112,15 @@ def viewAll(request):
                 'events': events,
                 'eid': int(id),
                 'max': max_rsvp,
-                'done': done_rsvp
+                'done': done_rsvp,
+                'nbar': 'viewAll',
             }
             messages.info(request, "Event - "+event.event_name)
             return render(request, 'viewAll.html', params)
         else:
             all_bookings = Booking.objects.all().filter(user=user)
             events = Event.objects.all().filter(user=user)
-            params = { 'all': all_bookings, 'events': events }
+            params = { 'all': all_bookings, 'events': events, 'nbar': 'viewAll'}
             return render(request, 'viewAll.html', params)
     else:
         return redirect('register_login')
@@ -131,7 +132,7 @@ def viewAllEvents(request):
 
         # all_bookings = Event.objects.all().filter(user=user)
         events = Event.objects.all().filter(user=user)
-        params = { 'events': events }
+        params = {'events': events, 'nbar': 'allEve'}
         return render(request, 'viewAllEvents.html', params)
     else:
         return redirect('register_login')
@@ -140,7 +141,8 @@ def viewAllEvents(request):
 def event(request):
     if request.user.is_authenticated:
         if request.method == "GET":
-            return render(request, 'newEvent.html')
+            params = {'nbar': 'newEve'}
+            return render(request, 'newEvent.html', params)
         else:
             current_user = request.user
             # print(current_user)
