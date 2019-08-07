@@ -4,6 +4,8 @@ This is a Django app for RSVP
 3. pip install -r requirement.txt
 4. python3 manage.py runserver
 
+Demo video: ``` res_imgs/demo.mov ```
+
 # Screenshots
 ## Dashboard
 <img src="res_imgs/1.png" width="80%">
