@@ -22,7 +22,7 @@ Hash string is used so that no one can change other persons data without unique 
 <img src="res_imgs/4.1.png" width="80%">
 
 ## Guest Scanning QR code and updating the data
-<img src="res_imgs/qrcode_hand.png" width="30%">
+<img src="res_imgs/qrcode_hand.png" width="30%"> <img src="res_imgs/guest.gif">
 
 ## After
 <img src="res_imgs/4.2.png" width="80%">
